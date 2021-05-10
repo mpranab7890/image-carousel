@@ -4,14 +4,14 @@ function Carousel(className) {
   this.currentImageIndex = 0;
   this.currentMarginLeft = 0;
   this.targetMarginLeft = 0;
-  this.pixelOffset = 20;
+  this.pixelOffset = 10;
 
   this.carouselElement = document.querySelector('.' + this.className);
-  console.log(this.carouselElement);
-  this.carouselWrapperElement = document.querySelector('.carousel-wrapper');
-  this.imageList = document.querySelectorAll('img');
+  // console.log(this.carouselElement);
+  this.carouselWrapperElement = this.carouselElement.querySelector('.carousel-wrapper');
+  this.imageList = this.carouselElement.querySelectorAll('img');
   this.totalImages = this.imageList.length;
-  console.log(this.totalImages);
+  // console.log(this.totalImages);
   this.imageWidth = this.imageList[0].width;
   this.imageHeight = this.imageList[0].height;
 
@@ -40,7 +40,7 @@ function Carousel(className) {
   this.dotWrapper.style.bottom = "5%";
   this.dotWrapper.setAttribute("class", "clearfix")
   this.carouselElement.append(this.dotWrapper);
-  console.log(this.dotWrapper);
+  //console.log(this.dotWrapper);
 
   this.imageList.forEach(function (element, index) {
     this.dot = document.createElement("div");
@@ -56,7 +56,7 @@ function Carousel(className) {
     this.dotWrapper.append(this.dot);
   }.bind(this));
 
-  this.dots = document.querySelectorAll(".dots");
+  this.dots = this.carouselElement.querySelectorAll(".dots");
 
   this.leftArrow = document.createElement('img');
   this.leftArrow.src = './images/left.png';
@@ -124,6 +124,10 @@ function Carousel(className) {
   };
 
   this.rightArrow.addEventListener('click', function () {
+    this.rightArrowClick();
+  }.bind(this));
+
+  this.rightArrowClick = function () {
     if (this.currentImageIndex == this.totalImages - 1) {
       this.targetMarginLeft = 0;
     }
@@ -132,7 +136,7 @@ function Carousel(className) {
     }
     this.dots[this.currentImageIndex].style.opacity = 0.6;
     this.rightInterval = setInterval(this.animateRight, 10)
-  }.bind(this));
+  };
 
   this.animateRight = function (noOfMoves = 1) {
     if (this.currentImageIndex == this.totalImages - 1) {
@@ -150,7 +154,7 @@ function Carousel(className) {
       if (this.currentMarginLeft <= this.targetMarginLeft) {
         this.currentMarginLeft = this.targetMarginLeft;
         this.currentImageIndex += noOfMoves;
-        console.log(this.currentImageIndex);
+        //console.log(this.currentImageIndex);
         this.dots[this.currentImageIndex].style.opacity = 1.0;
         clearInterval(this.rightInterval);
       }
@@ -163,12 +167,13 @@ function Carousel(className) {
 
   this.carouselElement.append(this.rightArrow);
 
-
   this.dots.forEach(function (dot, index) {
     dot.addEventListener("click", function (e) {
       this.dots[this.currentImageIndex].style.opacity = 0.6;
       let noOfMoves = Math.abs(index - this.currentImageIndex);
       let distanceToMove = noOfMoves * this.imageWidth;
+      // this.targetMarginLeft = this.imageList[index].left;
+      // let distanceToMove = Math.abs(this.targetMarginLeft - this.currentMarginLeft)
       if (index > this.currentImageIndex) {
         this.targetMarginLeft = this.currentMarginLeft - distanceToMove;
         this.rightInterval = setInterval(() => this.animateRight(noOfMoves), 10)
@@ -185,6 +190,12 @@ function Carousel(className) {
 
   }.bind(this))
 
-}
 
-// var c = new Carousel('carousel');
+  this.autoTransition = function () {
+    this.rightArrowClick();
+
+  }.bind(this);
+
+  setInterval(this.autoTransition, 3000)
+
+}
