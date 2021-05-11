@@ -14,7 +14,7 @@
       <img src="./images/image-1.jpg" alt="image 1" />
       <img src="./images/image-2.jpg" alt="image 2" />
       <img src="./images/image-3.jpg" alt="image 3" />
-      <img src="./images/image-4.jpg" alt="image 4" />
+      <!-- <img src="./images/image-4.jpg" alt="image 4" /> -->
     </div>
   </div>
 
@@ -24,10 +24,11 @@
       <img src="./images/image-2.jpg" alt="image 2" />
       <img src="./images/image-3.jpg" alt="image 3" />
       <img src="./images/image-4.jpg" alt="image 4" />
+      <img src="./images/image-5.jpg" alt="image 4" />
     </div>
   </div>
 
-  <!-- <div class="carousel-3">
+  <div class="carousel-3">
     <div class="carousel-wrapper">
       <img src="./images/image-1.jpg" alt="image 1" />
       <img src="./images/image-2.jpg" alt="image 2" />
@@ -42,15 +43,18 @@
       <img src="./images/image-2.jpg" alt="image 2" />
       <img src="./images/image-3.jpg" alt="image 3" />
       <img src="./images/image-4.jpg" alt="image 4" />
+      <img src="./images/image-5.jpg" alt="image 5" />
+      <img src="./images/image-6.jpg" alt="image 6" />
+
     </div>
-  </div> -->
+  </div>
 
   <script src="./js/carousel.js"></script>
   <script>
-    var c = new Carousel('carousel-1');
-    var c1 = new Carousel('carousel-2');
-    // var c2 = new Carousel('carousel-3');
-    // var c3 = new Carousel('carousel-4');
+    var c = new Carousel('carousel-1', 50, 3000);
+    var c1 = new Carousel('carousel-2', 10);
+    var c2 = new Carousel('carousel-3', 20);
+    var c3 = new Carousel('carousel-4', 100, 4000);
   </script>
 </body>
 

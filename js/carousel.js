@@ -1,29 +1,33 @@
-function Carousel(className) {
+function Carousel(className, pixelOffset, transitionDelay) {
   this.className = className;
+  this.pixelOffset = pixelOffset;
+  this.transitionDelay = transitionDelay;
 
   this.currentImageIndex = 0;
   this.currentMarginLeft = 0;
   this.targetMarginLeft = 0;
-  this.pixelOffset = 10;
 
   this.carouselElement = document.querySelector('.' + this.className);
-  // console.log(this.carouselElement);
   this.carouselWrapperElement = this.carouselElement.querySelector('.carousel-wrapper');
   this.imageList = this.carouselElement.querySelectorAll('img');
   this.totalImages = this.imageList.length;
-  // console.log(this.totalImages);
   this.imageWidth = this.imageList[0].width;
   this.imageHeight = this.imageList[0].height;
 
+  //Layout and styling of carousel div
+  this.carouselElement.style.display = "inline-block";
   this.carouselElement.style.width = this.imageWidth + 'px';
   this.carouselElement.style.height = this.imageHeight + 'px';
   this.carouselElement.style.position = 'relative';
+  this.carouselElement.style.overflow = 'hidden';
 
-  //   this.carouselWrapperElement.style.width = this.imageWidth + 'px';
+
+  // Layout and styling of carousel-wrapper
   this.carouselWrapperElement.style.height = this.imageHeight + 'px';
   this.carouselWrapperElement.style.position = 'relative';
   this.carouselWrapperElement.style.overflow = 'hidden';
 
+  // Layout of each image
   this.imageList.forEach(
     function (element, index) {
       element.style.position = 'absolute';
@@ -33,15 +37,15 @@ function Carousel(className) {
     }.bind(this)
   );
 
+  // Layout of a div that wraps all the dots
   this.dotWrapper = document.createElement('div');
-  // this.dotWrapper.style.width = "100%";
   this.dotWrapper.style.position = "absolute";
   this.dotWrapper.style.left = "42%";
   this.dotWrapper.style.bottom = "5%";
   this.dotWrapper.setAttribute("class", "clearfix")
   this.carouselElement.append(this.dotWrapper);
-  //console.log(this.dotWrapper);
 
+  //Styling of each dot
   this.imageList.forEach(function (element, index) {
     this.dot = document.createElement("div");
     this.dot.style.float = "left";
@@ -58,6 +62,8 @@ function Carousel(className) {
 
   this.dots = this.carouselElement.querySelectorAll(".dots");
 
+
+  //Layout and events of left arrow
   this.leftArrow = document.createElement('img');
   this.leftArrow.src = './images/left.png';
   this.leftArrow.style.position = 'absolute';
@@ -72,6 +78,12 @@ function Carousel(className) {
   };
 
   this.leftArrow.addEventListener('click', function () {
+    this.leftArrowClick();
+  }.bind(this));
+
+
+  //Triggered by click of left arrow
+  this.leftArrowClick = function () {
     if (this.currentImageIndex == 0) {
       this.targetMarginLeft = -this.imageWidth * (this.totalImages - 1);
     }
@@ -80,8 +92,10 @@ function Carousel(className) {
     }
     this.dots[this.currentImageIndex].style.opacity = 0.6;
     this.leftInterval = setInterval(this.animateLeft, 10)
-  }.bind(this));
+  }.bind(this);
 
+
+  //The below function runs on a defined interval after left arrow is clicked to show transition effect
   this.animateLeft = function (noOfMoves = 1) {
     if (this.currentImageIndex == 0) {
       this.currentMarginLeft -= this.pixelOffset * this.totalImages;
@@ -109,6 +123,7 @@ function Carousel(className) {
   this.carouselElement.append(this.leftArrow);
 
 
+  //Layout and styling of right arrow
   this.rightArrow = document.createElement('img');
   this.rightArrow.src = './images/right.png';
   this.rightArrow.style.position = 'absolute';
@@ -127,6 +142,8 @@ function Carousel(className) {
     this.rightArrowClick();
   }.bind(this));
 
+
+  //Triggered by click of right arrow
   this.rightArrowClick = function () {
     if (this.currentImageIndex == this.totalImages - 1) {
       this.targetMarginLeft = 0;
@@ -138,6 +155,7 @@ function Carousel(className) {
     this.rightInterval = setInterval(this.animateRight, 10)
   };
 
+  //The below function runs on a defined interval after right arrow is clicked to show transition effect
   this.animateRight = function (noOfMoves = 1) {
     if (this.currentImageIndex == this.totalImages - 1) {
       this.currentMarginLeft += this.pixelOffset * this.totalImages;
@@ -167,6 +185,7 @@ function Carousel(className) {
 
   this.carouselElement.append(this.rightArrow);
 
+
   this.dots.forEach(function (dot, index) {
     dot.addEventListener("click", function (e) {
       this.dots[this.currentImageIndex].style.opacity = 0.6;
@@ -186,16 +205,16 @@ function Carousel(className) {
       e.target.style.opacity = 1.0;
     }.bind(this))
 
-
-
   }.bind(this))
 
 
+  //Transitions occur automatically after defined interval
   this.autoTransition = function () {
     this.rightArrowClick();
-
   }.bind(this);
 
-  setInterval(this.autoTransition, 3000)
+  if (this.transitionDelay !== undefined) {
+    setInterval(this.autoTransition, this.transitionDelay)
+  }
 
 }
