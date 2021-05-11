@@ -6,6 +6,7 @@ function Carousel(className, pixelOffset, transitionDelay) {
   this.currentImageIndex = 0;
   this.currentMarginLeft = 0;
   this.targetMarginLeft = 0;
+  this.transition = false;
 
   this.carouselElement = document.querySelector('.' + this.className);
   this.carouselWrapperElement = this.carouselElement.querySelector('.carousel-wrapper');
@@ -78,7 +79,9 @@ function Carousel(className, pixelOffset, transitionDelay) {
   };
 
   this.leftArrow.addEventListener('click', function () {
-    this.leftArrowClick();
+    if (!this.transition) {
+      this.leftArrowClick();
+    }
   }.bind(this));
 
 
@@ -103,6 +106,9 @@ function Carousel(className, pixelOffset, transitionDelay) {
         this.currentMarginLeft = this.targetMarginLeft;
         this.currentImageIndex = this.totalImages - 1;
         this.dots[this.currentImageIndex].style.opacity = 1.0;
+        if (this.transition) {
+          this.transition = false;
+        }
         clearInterval(this.leftInterval);
       }
     }
@@ -113,6 +119,9 @@ function Carousel(className, pixelOffset, transitionDelay) {
         this.currentMarginLeft = this.targetMarginLeft;
         this.currentImageIndex -= noOfMoves;
         this.dots[this.currentImageIndex].style.opacity = 1.0;
+        if (this.transition) {
+          this.transition = false;
+        }
         clearInterval(this.leftInterval);
       }
     }
@@ -139,7 +148,9 @@ function Carousel(className, pixelOffset, transitionDelay) {
   };
 
   this.rightArrow.addEventListener('click', function () {
-    this.rightArrowClick();
+    if (!this.transition) {
+      this.rightArrowClick();
+    }
   }.bind(this));
 
 
@@ -163,6 +174,7 @@ function Carousel(className, pixelOffset, transitionDelay) {
         this.currentMarginLeft = this.targetMarginLeft;
         this.currentImageIndex = 0;
         this.dots[this.currentImageIndex].style.opacity = 1.0;
+        this.transition = false;
         clearInterval(this.rightInterval);
       }
     }
@@ -174,6 +186,7 @@ function Carousel(className, pixelOffset, transitionDelay) {
         this.currentImageIndex += noOfMoves;
         //console.log(this.currentImageIndex);
         this.dots[this.currentImageIndex].style.opacity = 1.0;
+        this.transition = false;
         clearInterval(this.rightInterval);
       }
     }
@@ -188,21 +201,23 @@ function Carousel(className, pixelOffset, transitionDelay) {
 
   this.dots.forEach(function (dot, index) {
     dot.addEventListener("click", function (e) {
-      this.dots[this.currentImageIndex].style.opacity = 0.6;
-      let noOfMoves = Math.abs(index - this.currentImageIndex);
-      let distanceToMove = noOfMoves * this.imageWidth;
-      // this.targetMarginLeft = this.imageList[index].left;
-      // let distanceToMove = Math.abs(this.targetMarginLeft - this.currentMarginLeft)
-      if (index > this.currentImageIndex) {
-        this.targetMarginLeft = this.currentMarginLeft - distanceToMove;
-        this.rightInterval = setInterval(() => this.animateRight(noOfMoves), 10)
-      }
-      else {
-        this.targetMarginLeft = this.currentMarginLeft + distanceToMove;
-        this.leftInterval = setInterval(() => this.animateLeft(noOfMoves), 10)
-      }
+      if (!this.transition) {
+        this.dots[this.currentImageIndex].style.opacity = 0.6;
+        let noOfMoves = Math.abs(index - this.currentImageIndex);
+        let distanceToMove = noOfMoves * this.imageWidth;
+        // this.targetMarginLeft = this.imageList[index].left;
+        // let distanceToMove = Math.abs(this.targetMarginLeft - this.currentMarginLeft)
+        if (index > this.currentImageIndex) {
+          this.targetMarginLeft = this.currentMarginLeft - distanceToMove;
+          this.rightInterval = setInterval(() => this.animateRight(noOfMoves), 10)
+        }
+        else {
+          this.targetMarginLeft = this.currentMarginLeft + distanceToMove;
+          this.leftInterval = setInterval(() => this.animateLeft(noOfMoves), 10)
+        }
 
-      e.target.style.opacity = 1.0;
+        e.target.style.opacity = 1.0;
+      }
     }.bind(this))
 
   }.bind(this))
@@ -210,7 +225,9 @@ function Carousel(className, pixelOffset, transitionDelay) {
 
   //Transitions occur automatically after defined interval
   this.autoTransition = function () {
+    this.transition = true;
     this.rightArrowClick();
+    // this.transition = false;
   }.bind(this);
 
   if (this.transitionDelay !== undefined) {
